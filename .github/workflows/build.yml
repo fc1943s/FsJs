@@ -22,4 +22,4 @@ jobs:
         run: cd src/FsJs; ./pack.ps1
 
       - run: dotnet nuget add source https://nuget.pkg.github.com/${{ github.actor }}/index.json --name github
-      - run: dotnet nuget push src/FsJs/bin/Release/*.symbols.nupkg --source github --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
+      - run: dotnet nuget push src/FsJs/bin/Release/*.nupkg --source github --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
