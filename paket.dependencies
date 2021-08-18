@@ -1,0 +1,14 @@
+version 6.0.3
+framework: net6.0
+storage: none
+source https://api.nuget.org/v3/index.json
+
+nuget FSharp.Core ~> 5.0
+
+
+// FsCore
+
+// FsJs
+nuget Fable.DateFunctions ~> 3.6
+nuget Fable.Extras ~> 0.4
+nuget Thoth.Json ~> 6.0
