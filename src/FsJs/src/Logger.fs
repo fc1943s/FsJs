@@ -155,14 +155,14 @@ module Logger =
         static member inline Default = Logger.Create DEFAULT_LOG_LEVEL
 
 
-    module Logger =
+    module State =
         let mutable lastLogger = Logger.Default
         let inline getLogger () = lastLogger
 
-    let inline logTrace fn = Logger.getLogger().Trace fn
-    let inline logDebug fn = Logger.getLogger().Debug fn
-    let inline logInfo fn = Logger.getLogger().Info fn
-    let inline logWarning fn = Logger.getLogger().Warning fn
-    let inline logError fn = Logger.getLogger().Error fn
+    let inline logTrace fn = State.getLogger().Trace fn
+    let inline logDebug fn = State.getLogger().Debug fn
+    let inline logInfo fn = State.getLogger().Info fn
+    let inline logWarning fn = State.getLogger().Warning fn
+    let inline logError fn = State.getLogger().Error fn
 
     logInfo (fun () -> $"Logger. deviceInfo={JS.JSON.stringify Dom.deviceInfo}")
