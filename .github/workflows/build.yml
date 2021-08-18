@@ -20,10 +20,7 @@ jobs:
         with:
           node-version: 16
 
-      - run: npx cypress info
-
       - run: dotnet tool restore
       - run: dotnet paket restore
-      #      - run: dotnet build --configuration Release
       - run: dotnet pack src/FsJs/FsJs.fsproj --configuration Release
-      - run: dotnet nuget push *.nupkg --skip-duplicate
+      - run: dotnet nuget push *.nupkg --skip-duplicate --sourcehttps://api.nuget.org/v3/index.json
