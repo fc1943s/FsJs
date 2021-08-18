@@ -72,6 +72,9 @@ module Js =
             return byteArrayToHexString (bytes.Values () |> Seq.toArray)
         }
 
+    let inline byteArrayToBlob mimeType (bytes: byte []) =
+        uint8ArrayToBlob (JSe.Uint8Array (unbox<uint8 []> bytes)) mimeType
+
     let inline hexStringToByteArray (text: string) =
         let rec loop acc =
             function

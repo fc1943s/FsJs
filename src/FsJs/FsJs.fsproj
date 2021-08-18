@@ -8,7 +8,7 @@
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/fc1943s/FsJs</RepositoryUrl>
         <Description>Minimal F#/JavaScript bindings</Description>
-        <Version>0.0.1-alpha.2</Version>
+        <Version>0.0.1-alpha.3</Version>
         <PackageTags>fsharp;fable</PackageTags>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     </PropertyGroup>
