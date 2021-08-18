@@ -11,6 +11,8 @@
         <Version>0.0.1</Version>
         <PackageVersion>0.0.1</PackageVersion>
         <PackageTags>fsharp;fable</PackageTags>
+        <IncludeSymbols>true</IncludeSymbols>
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     </PropertyGroup>
     <ItemGroup>
         <Compile Include="src\Core.fs" />
