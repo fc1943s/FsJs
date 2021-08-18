@@ -18,5 +18,6 @@ jobs:
 
       - run: dotnet tool restore
       - run: dotnet paket restore
-      - run: dotnet pack src/FsJs/FsJs.fsproj --configuration Release
-      - run: dotnet nuget push src/FsJs/bin/Release/*.nupkg --skip-duplicate --api-key ${{ secrets.GITHUB_TOKEN }} --source "https://nuget.pkg.github.com/${{ github.actor }}/index.json"
+      - run: dotnet pack src/FsJs/FsJs.fsproj --configuration Release  --include-symbols -p:SymbolPackageFormat=snupkg
+      - run: dotnet nuget add source https://nuget.pkg.github.com/${{ github.actor }}/index.json --name github
+      - run: dotnet nuget push src/FsJs/bin/Release/*.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source github --skip-duplicate
