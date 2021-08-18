@@ -23,4 +23,4 @@ jobs:
       - run: dotnet tool restore
       - run: dotnet paket restore
       - run: dotnet pack src/FsJs/FsJs.fsproj --configuration Release
-      - run: dotnet nuget push *.nupkg --skip-duplicate --sourcehttps://api.nuget.org/v3/index.json
+      - run: dotnet nuget push *.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json
