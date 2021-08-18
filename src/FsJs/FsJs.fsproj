@@ -4,12 +4,14 @@
         <TargetFramework>net6.0</TargetFramework>
         <LangVersion>preview</LangVersion>
         <PackageId>FsJs</PackageId>
+        <Authors>fc1943s</Authors>
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/fc1943s/FsJs</RepositoryUrl>
         <Description>Minimal JavaScript compatible F# bindings and utilities</Description>
         <Version>0.0.1</Version>
         <PackageVersion>0.0.1</PackageVersion>
         <PackageReleaseNotes># 0.0.1
+        <PackageTags>fable;fsharp</PackageTags>
 * #000: initial test</PackageReleaseNotes>
     </PropertyGroup>
     <ItemGroup>

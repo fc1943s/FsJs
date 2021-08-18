@@ -19,4 +19,5 @@ jobs:
       - run: dotnet tool restore
       - run: dotnet paket restore
       - run: dotnet pack src/FsJs/FsJs.fsproj --configuration Release
-      - run: dotnet nuget push src/FsJs/bin/Release/*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json
+      - run: dotnet nuget add source --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${{ github.actor }}/index.json"
+      - run: dotnet nuget push src/FsJs/bin/Release/*.nupkg --skip-duplicate --api-key ${{ secrets.NUGET_API_KEY }} --source "github"
