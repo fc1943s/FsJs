@@ -16,11 +16,7 @@ jobs:
           dotnet-version: 6.0.x
           include-prerelease: true
 
-      - uses: actions/setup-node@v2
-        with:
-          node-version: 16
-
       - run: dotnet tool restore
       - run: dotnet paket restore
       - run: dotnet pack src/FsJs/FsJs.fsproj --configuration Release
-      - run: dotnet nuget push *.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json
+      - run: dotnet nuget push src/FsJs/bin/Release/*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json
