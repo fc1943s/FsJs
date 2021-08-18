@@ -9,6 +9,5 @@ include-pdbs true
 include-referenced-projects true
 files
     *.fsproj ==> fable
-    src/*.fs ==> fable
-    src/Bindings/*.fs ==> fable/Bindings
-
+    src/*.fs ==> fable/src
+    src/Bindings/*.fs ==> fable/src/Bindings
