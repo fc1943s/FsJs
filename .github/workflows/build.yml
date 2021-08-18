@@ -2,10 +2,8 @@ name: build
 
 on:
   push:
-    branches: [ main ]
-    tags: [ 'v*.*.*' ]
-  pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build:
@@ -24,6 +22,8 @@ jobs:
 
       - run: npx cypress info
 
-      - run: dotnet tool restore && dotnet paket restore && dotnet build
-
-      - uses: actions/checkout@v2
+      - run: dotnet tool restore
+      - run: dotnet paket restore
+      #      - run: dotnet build --configuration Release
+      - run: dotnet pack src/FsJs/FsJs.fsproj --configuration Release
+      - run: dotnet nuget push *.nupkg --skip-duplicate

@@ -7,10 +7,7 @@
     <ItemGroup>
         <Compile Include="src\Core.fs" />
         <Compile Include="src\Model.fs" />
-        <Content Include="package.json" />
         <Content Include="paket.references" />
-        <Content Include=".gitignore" />
-        <Content Include="yarn.lock" />
     </ItemGroup>
     <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
