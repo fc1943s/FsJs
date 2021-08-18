@@ -5,3 +5,10 @@ language F#
 tags fsharp, fable
 repositoryType git
 repositoryUrl https://github.com/fc1943s/FsJs
+include-pdbs true
+include-referenced-projects true
+files
+    *.fsproj ==> fable
+    src/*.fs ==> fable
+    src/Bindings/*.fs ==> fable/Bindings
+
