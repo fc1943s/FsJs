@@ -1,0 +1,7 @@
+type project
+authors fc1943s
+description Minimal F#/JavaScript bindings
+language F#
+tags fsharp, fable
+repositoryType git
+repositoryUrl https://github.com/fc1943s/FsJs
