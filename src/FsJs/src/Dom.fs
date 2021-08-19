@@ -18,7 +18,6 @@ module Dom =
             None
 
     module Global =
-
         let private ``global`` = Dictionary<string, obj> ()
 
         match window () with
@@ -121,13 +120,16 @@ module Dom =
         && not deviceInfo.IsElectron
         && not deviceInfo.IsMobile
 
-    Global.set "Debug" false
-    if window?Cypress <> null then Global.set "Debug" true
-    Global.set "Debug" true
+    let inline globalWrapper<'T> name (defaultValue: 'T) =
+        {|
+            Get = fun () -> Global.get name defaultValue
+            Set = fun (value: 'T) -> Global.set name value
+        |}
 
-    let inline isDebug () =
-        let debug = Global.get "Debug" false
-        debug <> false && (debug || isDebugStatic)
+    let globalDebug = globalWrapper "Debug" false
+
+//    if window?Cypress <> null then globalDebug.Set true
+    globalDebug.Set isDebugStatic
 
     let deviceTag =
         deviceInfo.DeviceId

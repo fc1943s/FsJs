@@ -105,7 +105,7 @@ module Logger =
         | Error = 4
         | Critical = 5
 
-    let DEFAULT_LOG_LEVEL = if Dom.isDebug () then LogLevel.Debug else LogLevel.Info
+    let DEFAULT_LOG_LEVEL = if Dom.globalDebug.Get () then LogLevel.Trace else LogLevel.Info
 
     type LogFn = (unit -> string) -> unit
 

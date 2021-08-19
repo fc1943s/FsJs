@@ -8,7 +8,7 @@ open FsCore
 module Profiling =
     let private initialTicks = DateTime.Now.Ticks
 
-    let profilingState =
+    let private profilingState =
         {|
             CountMap = Dictionary<string, int> ()
             TimestampMap = List<string * float> ()
@@ -23,17 +23,17 @@ module Profiling =
             profilingState.TimestampMap.Clear ())
 
     let addTimestamp id =
-        if Dom.isDebug () then
+        if Dom.globalDebug.Get () then
             profilingState.TimestampMap.Add (id, DateTime.ticksDiff initialTicks)
 
     let removeCount id =
-        if Dom.isDebug () then
+        if Dom.globalDebug.Get () then
             match profilingState.CountMap.ContainsKey id with
             | false -> profilingState.CountMap.[id] <- -1
             | true -> profilingState.CountMap.[id] <- profilingState.CountMap.[id] - 1
 
     let addCount id =
-        if Dom.isDebug () then
+        if Dom.globalDebug.Get () then
             match profilingState.CountMap.ContainsKey id with
             | false -> profilingState.CountMap.[id] <- 1
             | true -> profilingState.CountMap.[id] <- profilingState.CountMap.[id] + 1
