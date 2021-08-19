@@ -36,14 +36,13 @@ module Logger =
 
         let fg =
             [
-                fgBlack
+                fgWhite
                 fgRed
                 fgGreen
                 fgYellow
                 fgBlue
                 fgMagenta
                 fgCyan
-                fgWhite
             ]
 
     let inline consoleLog (x: _ []) = emitJsExpr x "console.log(...$0)"
@@ -68,7 +67,7 @@ module Logger =
                     //                    printfn $"tagValue={tagValue} tagIndex={tagIndex}"
 
                     ConsoleFlag.fg.[Math.Min (ConsoleFlag.fg.Length - 1, Math.Max (0, tagIndex))]
-                    $"""[{Dom.deviceTag} {DateTime.Now |> DateTime.format "HH:mm:ss"}]"""
+                    $"""[{Dom.deviceTag} {DateTime.Now |> DateTime.format "HH:mm:ss SSS"}]"""
                     ConsoleFlag.reset
                     yield! result
                 |]
@@ -127,9 +126,9 @@ module Logger =
                     (fun () ->
                         [|
                             match logLevel with
-                            | LogLevel.Trace -> ConsoleFlag.fgBlack
+                            | LogLevel.Trace -> ConsoleFlag.fgWhite
                             | LogLevel.Debug -> ConsoleFlag.fgGreen
-                            | LogLevel.Info -> ConsoleFlag.fgWhite
+                            | LogLevel.Info -> ConsoleFlag.fgBlue
                             | LogLevel.Warning -> ConsoleFlag.fgYellow
                             | LogLevel.Error -> ConsoleFlag.fgRed
                             | LogLevel.Critical -> ConsoleFlag.fgMagenta
