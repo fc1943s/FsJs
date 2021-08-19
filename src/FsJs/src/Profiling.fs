@@ -10,20 +10,32 @@ module Profiling =
 
     let profilingState =
         {|
-            CallCount = Dictionary<string, int> ()
-            Timestamps = List<string * float> ()
+            CountMap = Dictionary<string, int> ()
+            TimestampMap = List<string * float> ()
         |}
 
     Dom.Global.set (nameof profilingState) profilingState
 
-    let addCount id =
-        if Dom.isDebug () then
-            match profilingState.CallCount.ContainsKey id with
-            | false -> profilingState.CallCount.[id] <- 1
-            | true -> profilingState.CallCount.[id] <- profilingState.CallCount.[id] + 1
+    Dom.Global.set
+        "clearProfilingState"
+        (fun () ->
+            profilingState.CountMap.Clear ()
+            profilingState.TimestampMap.Clear ())
 
     let addTimestamp id =
         if Dom.isDebug () then
-            profilingState.Timestamps.Add (id, DateTime.ticksDiff initialTicks)
+            profilingState.TimestampMap.Add (id, DateTime.ticksDiff initialTicks)
 
-    addTimestamp "Init"
+    let removeCount id =
+        if Dom.isDebug () then
+            match profilingState.CountMap.ContainsKey id with
+            | false -> profilingState.CountMap.[id] <- -1
+            | true -> profilingState.CountMap.[id] <- profilingState.CountMap.[id] - 1
+
+    let addCount id =
+        if Dom.isDebug () then
+            match profilingState.CountMap.ContainsKey id with
+            | false -> profilingState.CountMap.[id] <- 1
+            | true -> profilingState.CountMap.[id] <- profilingState.CountMap.[id] + 1
+
+    addTimestamp "Profiling body"
