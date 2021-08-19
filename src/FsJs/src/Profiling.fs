@@ -8,7 +8,7 @@ open FsCore
 module Profiling =
     let private initialTicks = DateTime.Now.Ticks
 
-    let private profilingState =
+    let profilingState =
         {|
             CountMap = Dictionary<string, int> ()
             TimestampMap = List<string * float> ()
