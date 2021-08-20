@@ -2,22 +2,26 @@ namespace FsJs
 
 open System
 open FsCore
+open FsJs
 open Fable.Core.JsInterop
 open Fable.Core
 
 module Logger =
     let inline logWithFn logFn fn =
-        match Dom.deviceTag |> List.ofSeq, fn () |> Seq.toList |> Option.ofObjUnbox with
-        | a :: b :: c, Some result ->
+        let result = fn ()
+
+        match Dom.deviceTag |> List.ofSeq, result |> Seq.toList |> Option.ofObjUnbox with
+        | a :: b :: c :: d :: _, Some result ->
+            let format = "HH:mm:ss.SSS"
+
             logFn [|
                 ("%c%s"
-                 |> String.replicate (2 + (result.Length - 1)))
-                $"color: f{a}{c}f{b}"
-                $"""[{Dom.deviceTag} {DateTime.Now |> DateTime.format "HH:mm:ss SSS"}]"""
-                ""
+                 |> String.replicate (1 + int (Math.Ceiling (float result.Length / 2.))))
+                $"color: #f{a}{b}{c}f{d}"
+                $"[{Dom.deviceTag} {DateTime.Now |> DateTime.format format}] "
                 yield! result
             |]
-        | _ -> ()
+        | _ -> eprintfn $"Logger.logWithFn. invalid log. Dom.deviceTag={Dom.deviceTag} result={result}"
 
     let inline consoleLog (x: _ []) = emitJsExpr x "console.log(...$0)"
     let inline consoleError (x: _ []) = emitJsExpr x "console.error(...$0)"
@@ -62,7 +66,7 @@ module Logger =
                                         | LogLevel.Error -> "red"
                                         | LogLevel.Critical -> "magenta"
                                         | _ -> "white"}"""
-                            $"[{Enum.name logLevel}]"
+                            $"[{Enum.name logLevel}] "
                             ""
                             result
                         |])
@@ -93,4 +97,4 @@ module Logger =
     let inline logWarning fn = State.getLogger().Warning fn
     let inline logError fn = State.getLogger().Error fn
 
-    logInfo (fun () -> $"Logger. deviceInfo={JS.JSON.stringify Dom.deviceInfo}")
+    logInfo (fun () -> $"Logger body. deviceInfo={JS.JSON.stringify Dom.deviceInfo}")

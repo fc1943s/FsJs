@@ -4,7 +4,7 @@
         <TargetFramework>net6.0</TargetFramework>
         <LangVersion>preview</LangVersion>
         <PackageId>FsJs</PackageId>
-        <Version>0.0.1-alpha.13</Version>
+        <Version>0.0.1-alpha.14</Version>
     </PropertyGroup>
     <ItemGroup>
         <Compile Include="src\Core.fs" />
@@ -13,11 +13,18 @@
         <Compile Include="src\Dom.fs" />
         <Compile Include="src\Logger.fs" />
         <Compile Include="src\Profiling.fs" />
+        <Compile Include="src\Tests\Setup.fs" />
+        <Compile Include="src\Tests\Jest.test.fs" />
+        <Content Include="jest.config.js" />
+        <Content Include="_babel.config.json" />
         <Content Include="pack.ps1">
             <Pack>false</Pack>
         </Content>
+        <Content Include="test.ps1" />
         <Content Include="paket.references" />
         <Content Include="paket.template" />
+        <Content Include="package.json" />
+        <Content Include="yarn.lock" />
     </ItemGroup>
     <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

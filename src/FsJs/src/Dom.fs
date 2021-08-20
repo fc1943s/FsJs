@@ -128,7 +128,7 @@ module Dom =
 
     let globalDebug = globalWrapper "Debug" false
 
-//    if window?Cypress <> null then globalDebug.Set true
+    //    if window?Cypress <> null then globalDebug.Set true
     globalDebug.Set isDebugStatic
 
     let deviceTag =
@@ -139,15 +139,12 @@ module Dom =
 
 
 
-    let inline exited () =
-        if not deviceInfo.IsTesting then
-            false
-        else
-            Browser.Dom.window?exit = true
+    let inline private shouldStopWaiting () =
+        deviceInfo.IsTesting && Global.get "exit" false
 
     let rec waitFor fn =
         async {
-            if exited () then
+            if shouldStopWaiting () then
                 return (unbox null)
             else
                 let ok = fn ()
@@ -163,7 +160,7 @@ module Dom =
 
     let rec waitForObject fn =
         async {
-            if exited () then
+            if shouldStopWaiting () then
                 return (unbox null)
             else
                 let! obj = fn ()
@@ -179,7 +176,7 @@ module Dom =
 
     let rec waitForSome fn =
         async {
-            if exited () then
+            if shouldStopWaiting () then
                 return (unbox null)
             else
                 let! obj = fn ()
