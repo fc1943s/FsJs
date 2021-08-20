@@ -5,95 +5,24 @@ open FsCore
 open Fable.Core.JsInterop
 open Fable.Core
 
-
 module Logger =
-    module ConsoleFlag =
-        let reset = "\x1b[0m"
-        let bright = "\x1b[1m"
-        let dim = "\x1b[2m"
-        let underscore = "\x1b[4m"
-        let blink = "\x1b[5m"
-        let reverse = "\x1b[7m"
-        let hidden = "\x1b[8m"
-
-        let fgBlack = "\x1b[30m"
-        let fgRed = "\x1b[31m"
-        let fgGreen = "\x1b[32m"
-        let fgYellow = "\x1b[33m"
-        let fgBlue = "\x1b[34m"
-        let fgMagenta = "\x1b[35m"
-        let fgCyan = "\x1b[36m"
-        let fgWhite = "\x1b[37m"
-
-        let bgBlack = "\x1b[40m"
-        let bgRed = "\x1b[41m"
-        let bgGreen = "\x1b[42m"
-        let bgYellow = "\x1b[43m"
-        let bgBlue = "\x1b[44m"
-        let bgMagenta = "\x1b[45m"
-        let bgCyan = "\x1b[46m"
-        let bgWhite = "\x1b[47m"
-
-        let fg =
-            [
-                fgWhite
-                fgRed
-                fgGreen
-                fgYellow
-                fgBlue
-                fgMagenta
-                fgCyan
-            ]
+    let inline logWithFn logFn fn =
+        match Dom.deviceTag |> List.ofSeq, fn () |> Seq.toList |> Option.ofObjUnbox with
+        | a :: b :: c, Some result ->
+            logFn [|
+                ("%c%s"
+                 |> String.replicate (2 + (result.Length - 1)))
+                $"color: f{a}{c}f{b}"
+                $"""[{Dom.deviceTag} {DateTime.Now |> DateTime.format "HH:mm:ss SSS"}]"""
+                ""
+                yield! result
+            |]
+        | _ -> ()
 
     let inline consoleLog (x: _ []) = emitJsExpr x "console.log(...$0)"
-    let inline consoleError x = Browser.Dom.console.error x
-
-    let inline logWithFn logFn fn =
-        let result = fn ()
-
-        if result |> Option.ofObjUnbox |> Option.isSome then
-
-            let output =
-                [|
-                    let tagValue =
-                        Dom.deviceTag
-                        |> Seq.map Char.getNumericValue
-                        |> Seq.map Math.Abs
-                        |> Seq.map float
-                        |> Seq.sum
-
-                    let tagIndex = ((tagValue / 60.) * 5.) - 5. |> int
-
-                    //                    printfn $"tagValue={tagValue} tagIndex={tagIndex}"
-
-                    ConsoleFlag.fg.[Math.Min (ConsoleFlag.fg.Length - 1, Math.Max (0, tagIndex))]
-                    $"""[{Dom.deviceTag} {DateTime.Now |> DateTime.format "HH:mm:ss SSS"}]"""
-                    ConsoleFlag.reset
-                    yield! result
-                |]
-                |> String.concat " "
-
-            logFn output
-
-    let inline log fn = logWithFn (fun x -> printfn $"{x}") fn
-
-    let inline logFiltered newValue fn =
-        log
-            (fun () ->
-                if (string newValue).StartsWith "Ping " then
-                    null
-                else
-                    let result: string = fn ()
-
-                    if result.Contains "devicePing" then
-                        null
-                    else
-                        [|
-                            result
-                        |])
-
-    let inline logArray (fn: unit -> _ []) = logWithFn (fun x -> printfn $"{x}") fn
-    let inline elog fn = logWithFn (fun x -> eprintfn $"{x}") fn
+    let inline consoleError (x: _ []) = emitJsExpr x "console.error(...$0)"
+    let inline log (fn: unit -> _ []) = logWithFn consoleLog fn
+    let inline elog (fn: unit -> _ []) = logWithFn consoleError fn
 
 
     type LogLevel =
@@ -122,19 +51,19 @@ module Logger =
             let result = fn ()
 
             if result |> Option.ofObjUnbox |> Option.isSome then
-                logArray
+                log
                     (fun () ->
                         [|
-                            match logLevel with
-                            | LogLevel.Trace -> ConsoleFlag.fgWhite
-                            | LogLevel.Debug -> ConsoleFlag.fgGreen
-                            | LogLevel.Info -> ConsoleFlag.fgCyan
-                            | LogLevel.Warning -> ConsoleFlag.fgYellow
-                            | LogLevel.Error -> ConsoleFlag.fgRed
-                            | LogLevel.Critical -> ConsoleFlag.fgMagenta
-                            | _ -> ConsoleFlag.fgWhite
+                            $"""color: {match logLevel with
+                                        | LogLevel.Trace -> "white"
+                                        | LogLevel.Debug -> "green"
+                                        | LogLevel.Info -> "cyan"
+                                        | LogLevel.Warning -> "yellow"
+                                        | LogLevel.Error -> "red"
+                                        | LogLevel.Critical -> "magenta"
+                                        | _ -> "white"}"""
                             $"[{Enum.name logLevel}]"
-                            ConsoleFlag.fgWhite
+                            ""
                             result
                         |])
 
