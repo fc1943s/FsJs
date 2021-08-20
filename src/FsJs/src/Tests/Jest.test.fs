@@ -20,7 +20,7 @@ module Jest =
                         "%c%s%c%s%c%s"
                         "color: white"
                         "[Trace] "
-                        ""
+                        "color: #999"
                         text
                     ]
                 )
