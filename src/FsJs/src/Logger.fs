@@ -67,7 +67,7 @@ module Logger =
                                         | LogLevel.Critical -> "magenta"
                                         | _ -> "white"}"""
                             $"[{Enum.name logLevel}] "
-                            ""
+                            "color: #999"
                             result
                         |])
 
