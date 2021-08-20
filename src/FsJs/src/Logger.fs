@@ -59,7 +59,7 @@ module Logger =
                     (fun () ->
                         [|
                             $"""color: {match logLevel with
-                                        | LogLevel.Trace -> "white"
+                                        | LogLevel.Trace -> "#EEE"
                                         | LogLevel.Debug -> "green"
                                         | LogLevel.Info -> "cyan"
                                         | LogLevel.Warning -> "yellow"
@@ -67,7 +67,7 @@ module Logger =
                                         | LogLevel.Critical -> "magenta"
                                         | _ -> "white"}"""
                             $"[{Enum.name logLevel}] "
-                            "color: #999"
+                            "color: #AAA"
                             result
                         |])
 

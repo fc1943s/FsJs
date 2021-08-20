@@ -18,9 +18,9 @@ module Jest =
                 .toEqual (
                     expect.arrayContaining [
                         "%c%s%c%s%c%s"
-                        "color: white"
+                        "color: #EEE"
                         "[Trace] "
-                        "color: #999"
+                        "color: #AAA"
                         text
                     ]
                 )
