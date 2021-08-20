@@ -128,7 +128,7 @@ module Logger =
                             match logLevel with
                             | LogLevel.Trace -> ConsoleFlag.fgWhite
                             | LogLevel.Debug -> ConsoleFlag.fgGreen
-                            | LogLevel.Info -> ConsoleFlag.fgBlue
+                            | LogLevel.Info -> ConsoleFlag.fgCyan
                             | LogLevel.Warning -> ConsoleFlag.fgYellow
                             | LogLevel.Error -> ConsoleFlag.fgRed
                             | LogLevel.Critical -> ConsoleFlag.fgMagenta
