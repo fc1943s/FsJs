@@ -11,3 +11,4 @@ files
     *.fsproj ==> fable
     src/*.fs ==> fable/src
     src/Bindings/*.fs ==> fable/src/Bindings
+    src/Tests/*.fs ==> fable/src/Tests
