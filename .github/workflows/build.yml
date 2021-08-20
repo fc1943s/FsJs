@@ -21,12 +21,9 @@ jobs:
           node-version: 16
 
       - shell: pwsh
-        run: cd src/FsJs; ./test.ps1
-
-      - shell: pwsh
         env:
           GITHUB_READ_PACKAGES_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: cd src/FsJs; ./pack.ps1
+        run: cd src/FsJs; ./test.ps1; .pack.ps1
 
       - run: dotnet nuget add source https://nuget.pkg.github.com/${{ github.actor }}/index.json --name github
       - run: dotnet nuget push src/FsJs/bin/Release/*.nupkg --source github --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
