@@ -126,7 +126,8 @@ module Dom =
             Set = fun (value: 'T) -> Global.set name value
         |}
 
-    let globalDebug = globalWrapper "Debug" false
+    let rec Debug = nameof Debug
+    let globalDebug = globalWrapper Debug false
 
     //    if window?Cypress <> null then globalDebug.Set true
     globalDebug.Set isDebugStatic
@@ -139,12 +140,12 @@ module Dom =
 
 
 
-    let inline private shouldStopWaiting () =
-        deviceInfo.IsTesting && Global.get "exit" false
+    let rec Exit = nameof Exit
+    let globalExit = globalWrapper Exit false
 
     let rec waitFor fn =
         async {
-            if shouldStopWaiting () then
+            if globalExit.Get () then
                 return (unbox null)
             else
                 let ok = fn ()
@@ -160,7 +161,7 @@ module Dom =
 
     let rec waitForObject fn =
         async {
-            if shouldStopWaiting () then
+            if globalExit.Get () then
                 return (unbox null)
             else
                 let! obj = fn ()
@@ -176,7 +177,7 @@ module Dom =
 
     let rec waitForSome fn =
         async {
-            if shouldStopWaiting () then
+            if globalExit.Get () then
                 return (unbox null)
             else
                 let! obj = fn ()

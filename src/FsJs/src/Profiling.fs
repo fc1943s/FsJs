@@ -16,16 +16,16 @@ module Profiling =
 
     Dom.Global.set (nameof profilingState) profilingState
 
-    Dom.Global.set
-        "clearProfilingState"
-        (fun () ->
-            Logger.logTrace
-                (fun () ->
-                    $"Profiling.clearProfilingState
-profilingState.CountMap.Count={profilingState.CountMap.Count} profilingState.TimestampMap.Count={profilingState.TimestampMap.Count} ")
+    let clearProfilingState () =
+        Logger.logTrace
+            (fun () ->
+                $"Profiling.clearProfilingState
+                                profilingState.CountMap.Count={profilingState.CountMap.Count} profilingState.TimestampMap.Count={profilingState.TimestampMap.Count} ")
 
-            profilingState.CountMap.Clear ()
-            profilingState.TimestampMap.Clear ())
+        profilingState.CountMap.Clear ()
+        profilingState.TimestampMap.Clear ()
+
+    Dom.Global.set (nameof clearProfilingState) clearProfilingState
 
     let addTimestamp id =
         if Dom.globalDebug.Get () then

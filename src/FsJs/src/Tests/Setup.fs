@@ -39,6 +39,6 @@ $1 = jest.fn()"
     Jest.afterAll (
         promise {
             Logger.logTrace (fun () -> "Setup body. Jest.afterAll")
-            Global.set "exit" true
+            globalExit.Set true
         }
     )
