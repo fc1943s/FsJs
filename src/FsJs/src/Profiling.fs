@@ -15,10 +15,10 @@ module Profiling =
             TimestampMap = List<string * float> ()
         |}
 
-    let rec globalProfilingState = Dom.globalWrapper (nameof globalProfilingState) profilingState
+    let rec globalProfilingState = Dom.Global.register (nameof globalProfilingState) profilingState
 
     let rec globalClearProfilingState =
-        Dom.globalWrapper
+        Dom.Global.register
             (nameof globalClearProfilingState)
             (fun () ->
                 Logger.logTrace

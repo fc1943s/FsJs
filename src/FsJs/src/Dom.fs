@@ -119,20 +119,19 @@ module Dom =
 
         let internalSet key value = globalMap.[key] <- value
 
+        let inline register<'T> key (defaultValue: 'T) =
+            let result =
+                {|
+                    Key = key
+                    Get = fun () -> internalGet key defaultValue
+                    Set = fun (value: 'T) -> internalSet key value
+                |}
 
-    let inline globalWrapper<'T> key (defaultValue: 'T) =
-        let result =
-            {|
-                Key = key
-                Get = fun () -> Global.internalGet key defaultValue
-                Set = fun (value: 'T) -> Global.internalSet key value
-            |}
 
+            result.Set defaultValue
+            result
 
-        result.Set defaultValue
-        result
-
-    let rec globalDebug = globalWrapper (nameof globalDebug) isDebugStatic
+    let rec globalDebug = Global.register (nameof globalDebug) isDebugStatic
 
     let deviceTag =
         deviceInfo.DeviceId
@@ -140,7 +139,7 @@ module Dom =
         |> string
         |> String.substringFrom -4
 
-    let rec globalExit = globalWrapper (nameof globalExit) false
+    let rec globalExit = Global.register (nameof globalExit) false
 
     let rec waitFor fn =
         async {
