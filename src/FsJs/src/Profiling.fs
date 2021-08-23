@@ -28,11 +28,6 @@ profilingState.TimestampMap.Count={profilingState.TimestampMap.Count} ")
 
     Dom.Global.set (nameof clearProfilingState) clearProfilingState
 
-    let addTimestamp id =
-        if Dom.globalDebug.Get () then
-            let newTicks = DateTime.ticksDiff initialTicks
-            profilingState.TimestampMap.Add (id, newTicks)
-            Logger.logTrace (fun () -> $"Profiling.addTimestamp [{id}] ticks={newTicks}")
 
     let removeCount id =
         if Dom.globalDebug.Get () then
@@ -49,5 +44,13 @@ profilingState.TimestampMap.Count={profilingState.TimestampMap.Count} ")
             | true -> profilingState.CountMap.[id] <- profilingState.CountMap.[id] + 1
 
             Logger.logTrace (fun () -> $"Profiling.addCount [{id}] ++{profilingState.CountMap.[id]}")
+
+    let addTimestamp id =
+        if Dom.globalDebug.Get () then
+            let newTicks = DateTime.ticksDiff initialTicks
+            profilingState.TimestampMap.Add (id, newTicks)
+            let newId = $"Profiling.addTimestamp [{id}] ticks={newTicks}"
+            Logger.logTrace (fun () -> newId)
+            addCount id
 
     addTimestamp "Profiling body"
