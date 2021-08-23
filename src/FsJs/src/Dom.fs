@@ -108,8 +108,11 @@ module Dom =
     module Global =
         let private globalMap = Dictionary<string, obj> ()
 
+        let inline setWindowGlobalMap window (value: Dictionary<string, obj>) = window?_globalMap <- value
+        let inline getWindowGlobalMap window : Dictionary<string, obj> = window?_globalMap
+
         match window () with
-        | Some window when isDebugStatic -> window?_globalMap <- globalMap
+        | Some window when isDebugStatic -> setWindowGlobalMap window globalMap
         | _ -> ()
 
         let internalGet<'T> (key: string) (defaultValue: 'T) =
@@ -124,10 +127,8 @@ module Dom =
             member _.DefaultValue = defaultValue
             member inline this.Get () = internalGet this.Key this.DefaultValue
             member inline this.Set (value: 'T) = internalSet this.Key value
-            member inline this.CypressGet () = Bindings.Cypress.globalGet<'T> this.Key
-
-            member inline this.CypressSet (value: 'T) =
-                Bindings.Cypress.globalSet this.Key value
+            member inline this.Read getter = getter this.Key
+            member inline this.Write setter (value: 'T) = setter this.Key value
 
         let inline register<'T> key (defaultValue: 'T) =
             let globalObject = GlobalObject (key, defaultValue)

@@ -3,6 +3,7 @@ namespace FsJs.Bindings
 open Browser.Types
 open Fable.Core
 open Fable.Core.JsInterop
+open FsJs
 
 
 module Cypress =
@@ -12,6 +13,7 @@ module Cypress =
         emitJsExpr (title, fn) "describe($0, $1)"
 
     let inline before (fn: unit -> unit) = emitJsExpr fn "before($0)"
+    let inline after (fn: unit -> unit) = emitJsExpr fn "after($0)"
 
     type ExpectToBe<'T> =
         abstract equal : obj -> unit
@@ -226,8 +228,14 @@ module Cypress =
 
     let inline globalGet<'T> (key: string) =
         Cy.window ()
-        |> Promise.map (fun window -> window?_global?get key |> unbox<'T>)
+        |> Promise.map
+            (fun window ->
+                (Dom.Global.getWindowGlobalMap window).[key]
+                |> unbox<'T>)
 
     let inline globalSet<'T> (key: string) (value: 'T) =
         Cy.window ()
-        |> Promise.iter (fun window -> window?_global?set key value)
+        |> Promise.iter
+            (fun window ->
+                let map = Dom.Global.getWindowGlobalMap window
+                map.[key] <- value)

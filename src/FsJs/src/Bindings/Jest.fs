@@ -1,4 +1,4 @@
-namespace FsJs.Tests
+namespace FsJs.Bindings
 
 open Fable.Jester
 open Fable.ReactTestingLibrary
@@ -20,7 +20,7 @@ module RTL =
         }
 
 
-module Setup =
+module Jest =
     import "jest" "@jest/globals"
 
     [<Literal>]
