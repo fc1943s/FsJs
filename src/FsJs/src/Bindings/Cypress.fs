@@ -56,7 +56,6 @@ module Cypress =
 
             abstract scrollTo : string -> {| ensureScrollable: bool |} -> unit
             abstract get : string -> Chainable2<'T>
-            //            abstract get : string -> Async<_>
             abstract parents : string -> Chainable2<'T>
             abstract find : string -> Chainable2<'T>
             abstract children : string -> Chainable2<'T>
@@ -82,20 +81,6 @@ module Cypress =
 
         let inline cypressPromise<'T> (fn: ('T -> unit) -> (string -> unit) -> unit) : JS.Promise<'T> =
             emitJsExpr fn "new Cypress.Promise((res, err) => { $0(res, err) })"
-
-
-        //        function waitOneSecond() {
-//    // return a promise that resolves after 1 second
-//    return new Cypress.Promise((resolve, reject) => {
-//      setTimeout(() => {
-//        // set waited to true
-//        waited = true
-//
-//        // resolve with 'foo' string
-//        resolve('foo')
-//      }, 1000)
-//    })
-//  }
 
         let inline elContains
             (el: Chainable2<'T>)
@@ -237,3 +222,12 @@ module Cypress =
             Cy
                 .location()
                 .should (fun location -> expect(location.href).``to``.contain expected)
+
+
+    let inline globalGet key =
+        Cy.window ()
+        |> Promise.map (fun window -> window?_global?get key |> unbox<'T>)
+
+    let inline globalSet key value =
+        Cy.window ()
+        |> Promise.iter (fun window -> window?_global?set key value)
