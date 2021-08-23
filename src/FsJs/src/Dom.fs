@@ -10,27 +10,6 @@ open FsCore.BaseModel
 
 
 module Dom =
-    let inline window () =
-        if jsTypeof Browser.Dom.window <> "undefined" then
-            Some Browser.Dom.window
-        else
-            printfn "No window found"
-            None
-
-    module Global =
-        let private ``global`` = Dictionary<string, obj> ()
-
-        match window () with
-        | Some window -> window?_global <- ``global``
-        | None -> ()
-
-        let get<'T> (key: string) (defaultValue: 'T) =
-            match ``global``.TryGetValue key with
-            | true, value -> value |> unbox<'T>
-            | _ -> defaultValue
-
-        let set key value = ``global``.[key] <- value
-
     type DeviceInfo =
         {
             Brands: (string * string) []
@@ -52,6 +31,12 @@ module Dom =
                 DeviceId = DeviceId Guid.Empty
             }
 
+    let inline window () =
+        if jsTypeof Browser.Dom.window <> "undefined" then
+            Some Browser.Dom.window
+        else
+            printfn "No window found"
+            None
 
     let deviceInfo =
         match window () with
@@ -120,17 +105,34 @@ module Dom =
         && not deviceInfo.IsElectron
         && not deviceInfo.IsMobile
 
-    let inline globalWrapper<'T> name (defaultValue: 'T) =
-        {|
-            Get = fun () -> Global.get name defaultValue
-            Set = fun (value: 'T) -> Global.set name value
-        |}
+    module Global =
+        let private globalMap = Dictionary<string, obj> ()
 
-    let rec Debug = nameof Debug
-    let globalDebug = globalWrapper Debug false
+        match window () with
+        | Some window when isDebugStatic -> window?_globalMap <- globalMap
+        | _ -> ()
 
-    //    if window?Cypress <> null then globalDebug.Set true
-    globalDebug.Set isDebugStatic
+        let internalGet<'T> (key: string) (defaultValue: 'T) =
+            match globalMap.TryGetValue key with
+            | true, value -> value |> unbox<'T>
+            | _ -> defaultValue
+
+        let internalSet key value = globalMap.[key] <- value
+
+
+    let inline globalWrapper<'T> key (defaultValue: 'T) =
+        let result =
+            {|
+                Key = key
+                Get = fun () -> Global.internalGet key defaultValue
+                Set = fun (value: 'T) -> Global.internalSet key value
+            |}
+
+
+        result.Set defaultValue
+        result
+
+    let rec globalDebug = globalWrapper (nameof globalDebug) isDebugStatic
 
     let deviceTag =
         deviceInfo.DeviceId
@@ -138,10 +140,7 @@ module Dom =
         |> string
         |> String.substringFrom -4
 
-
-
-    let rec Exit = nameof Exit
-    let globalExit = globalWrapper Exit false
+    let rec globalExit = globalWrapper (nameof globalExit) false
 
     let rec waitFor fn =
         async {

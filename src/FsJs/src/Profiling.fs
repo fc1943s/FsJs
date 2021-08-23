@@ -8,29 +8,34 @@ open FsCore
 module Profiling =
     let private initialTicks = DateTime.Now.Ticks
 
-    let profilingState =
-        {|
-            CountMap = Dictionary<string, int> ()
-            TimestampMap = List<string * float> ()
-        |}
 
-    Dom.Global.set (nameof profilingState) profilingState
+    let rec globalProfilingState =
+        Dom.globalWrapper
+            (nameof globalProfilingState)
+            {|
+                CountMap = Dictionary<string, int> ()
+                TimestampMap = List<string * float> ()
+            |}
 
-    let clearProfilingState () =
-        Logger.logTrace
+    let rec globalClearProfilingState =
+        Dom.globalWrapper
+            (nameof globalClearProfilingState)
             (fun () ->
-                $"Profiling.clearProfilingState
-profilingState.CountMap.Count={profilingState.CountMap.Count}
-profilingState.TimestampMap.Count={profilingState.TimestampMap.Count} ")
+                let profilingState = globalProfilingState.Get ()
 
-        profilingState.CountMap.Clear ()
-        profilingState.TimestampMap.Clear ()
+                Logger.logTrace
+                    (fun () ->
+                        $"Profiling.globalClearProfilingState
+             CountMap.Count={profilingState.CountMap.Count}
+             TimestampMap.Count={profilingState.TimestampMap.Count} ")
 
-    Dom.Global.set (nameof clearProfilingState) clearProfilingState
-
+                profilingState.CountMap.Clear ()
+                profilingState.TimestampMap.Clear ())
 
     let removeCount id =
         if Dom.globalDebug.Get () then
+            let profilingState = globalProfilingState.Get ()
+
             match profilingState.CountMap.ContainsKey id with
             | false -> profilingState.CountMap.[id] <- -1
             | true -> profilingState.CountMap.[id] <- profilingState.CountMap.[id] - 1
@@ -39,6 +44,8 @@ profilingState.TimestampMap.Count={profilingState.TimestampMap.Count} ")
 
     let addCount id =
         if Dom.globalDebug.Get () then
+            let profilingState = globalProfilingState.Get ()
+
             match profilingState.CountMap.ContainsKey id with
             | false -> profilingState.CountMap.[id] <- 1
             | true -> profilingState.CountMap.[id] <- profilingState.CountMap.[id] + 1
@@ -47,6 +54,7 @@ profilingState.TimestampMap.Count={profilingState.TimestampMap.Count} ")
 
     let addTimestamp id =
         if Dom.globalDebug.Get () then
+            let profilingState = globalProfilingState.Get ()
             let newTicks = DateTime.ticksDiff initialTicks
             profilingState.TimestampMap.Add (id, newTicks)
             let newId = $"Profiling.addTimestamp [{id}] ticks={newTicks}"
