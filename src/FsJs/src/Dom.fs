@@ -120,11 +120,14 @@ module Dom =
         let internalSet key value = globalMap.[key] <- value
 
         type GlobalObject<'T> (key: string, defaultValue: 'T) =
-            member inline _.Key = key
-            member inline this.Get () = internalGet key defaultValue
-            member inline this.Set (value: 'T) = internalSet key value
-            member inline this.CypressGet () = Bindings.Cypress.globalGet key
-            member inline this.CypressSet (value: 'T) = Bindings.Cypress.globalSet key value
+            member _.Key = key
+            member _.DefaultValue = defaultValue
+            member inline this.Get () = internalGet this.Key this.DefaultValue
+            member inline this.Set (value: 'T) = internalSet this.Key value
+            member inline this.CypressGet () = Bindings.Cypress.globalGet this.Key
+
+            member inline this.CypressSet (value: 'T) =
+                Bindings.Cypress.globalSet this.Key value
 
         let inline register<'T> key (defaultValue: 'T) =
             let globalObject = GlobalObject (key, defaultValue)
