@@ -9,11 +9,6 @@ open FsJs
 module Cypress =
     let cypressTimeout = 200000
 
-    let inline describe (title: string) (fn: unit -> unit) =
-        emitJsExpr (title, fn) "describe($0, $1)"
-
-    let inline before (fn: unit -> unit) = emitJsExpr fn "before($0)"
-    let inline after (fn: unit -> unit) = emitJsExpr fn "after($0)"
 
     type ExpectToBe<'T> =
         abstract equal : obj -> unit
@@ -226,6 +221,9 @@ module Cypress =
                 .should (fun location -> expect(location.href).``to``.contain expected)
 
 
+    let inline before (fn: unit -> unit) = emitJsExpr fn "before($0)"
+    let inline after (fn: unit -> unit) = emitJsExpr fn "after($0)"
+
     let inline globalGet<'T> (key: string) =
         Cy.window ()
         |> Promise.map
@@ -239,3 +237,11 @@ module Cypress =
             (fun window ->
                 let map = Dom.Global.getWindowGlobalMap window
                 map.[key] <- value)
+
+    let inline describe (title: string) (fn: unit -> unit) =
+        emitJsExpr
+            (title,
+             (fun () ->
+                 after (fun () -> Dom.globalExit.Write globalSet true)
+                 fn ()))
+            "describe($0, $1)"
