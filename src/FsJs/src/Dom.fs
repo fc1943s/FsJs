@@ -127,7 +127,7 @@ module Dom =
             member _.DefaultValue = defaultValue
             member inline this.Get () = internalGet this.Key this.DefaultValue
             member inline this.Set (value: 'T) = internalSet this.Key value
-            member inline this.Read getter = getter this.Key
+            member inline this.Read<'T> (getter: string -> 'T) = getter this.Key
             member inline this.Write setter (value: 'T) = setter this.Key value
 
         let inline register<'T> key (defaultValue: 'T) =
