@@ -9,20 +9,18 @@ module Profiling =
     let private initialTicks = DateTime.Now.Ticks
 
 
-    let rec globalProfilingState =
-        Dom.globalWrapper
-            (nameof globalProfilingState)
-            {|
-                CountMap = Dictionary<string, int> ()
-                TimestampMap = List<string * float> ()
-            |}
+    let private profilingState =
+        {|
+            CountMap = Dictionary<string, int> ()
+            TimestampMap = List<string * float> ()
+        |}
+
+    let rec globalProfilingState = Dom.globalWrapper (nameof globalProfilingState) profilingState
 
     let rec globalClearProfilingState =
         Dom.globalWrapper
             (nameof globalClearProfilingState)
             (fun () ->
-                let profilingState = globalProfilingState.Get ()
-
                 Logger.logTrace
                     (fun () ->
                         $"Profiling.globalClearProfilingState
@@ -34,8 +32,6 @@ module Profiling =
 
     let removeCount id =
         if Dom.globalDebug.Get () then
-            let profilingState = globalProfilingState.Get ()
-
             match profilingState.CountMap.ContainsKey id with
             | false -> profilingState.CountMap.[id] <- -1
             | true -> profilingState.CountMap.[id] <- profilingState.CountMap.[id] - 1
@@ -44,8 +40,6 @@ module Profiling =
 
     let addCount id =
         if Dom.globalDebug.Get () then
-            let profilingState = globalProfilingState.Get ()
-
             match profilingState.CountMap.ContainsKey id with
             | false -> profilingState.CountMap.[id] <- 1
             | true -> profilingState.CountMap.[id] <- profilingState.CountMap.[id] + 1
@@ -54,7 +48,6 @@ module Profiling =
 
     let addTimestamp id =
         if Dom.globalDebug.Get () then
-            let profilingState = globalProfilingState.Get ()
             let newTicks = DateTime.ticksDiff initialTicks
             profilingState.TimestampMap.Add (id, newTicks)
             let newId = $"Profiling.addTimestamp [{id}] ticks={newTicks}"
