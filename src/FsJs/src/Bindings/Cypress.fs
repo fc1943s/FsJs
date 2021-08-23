@@ -224,10 +224,10 @@ module Cypress =
                 .should (fun location -> expect(location.href).``to``.contain expected)
 
 
-    let inline globalGet key =
+    let inline globalGet<'T> (key: string) =
         Cy.window ()
         |> Promise.map (fun window -> window?_global?get key |> unbox<'T>)
 
-    let inline globalSet key value =
+    let inline globalSet<'T> (key: string) (value: 'T) =
         Cy.window ()
         |> Promise.iter (fun window -> window?_global?set key value)

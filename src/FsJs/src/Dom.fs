@@ -124,7 +124,7 @@ module Dom =
             member _.DefaultValue = defaultValue
             member inline this.Get () = internalGet this.Key this.DefaultValue
             member inline this.Set (value: 'T) = internalSet this.Key value
-            member inline this.CypressGet () = Bindings.Cypress.globalGet this.Key
+            member inline this.CypressGet () = Bindings.Cypress.globalGet<'T> this.Key
 
             member inline this.CypressSet (value: 'T) =
                 Bindings.Cypress.globalSet this.Key value
