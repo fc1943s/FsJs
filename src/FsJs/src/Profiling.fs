@@ -55,3 +55,14 @@ module Profiling =
             addCount newId
 
     addTimestamp $"{nameof FsJs} | Profiling body"
+
+
+    let measureTimeN n name fn =
+        Browser.Dom.console.time name
+
+        for i in 0 .. n do
+            fn ()
+
+        Browser.Dom.console.timeEnd name
+
+    let measureTime = measureTimeN 999999
