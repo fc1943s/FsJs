@@ -50,9 +50,8 @@ module Profiling =
         if Dom.globalDebug.Get () then
             let newTicks = DateTime.ticksDiff initialTicks
             profilingState.TimestampMap.Add (id, newTicks)
-            let newId = $"Profiling.addTimestamp [{id}] ticks={newTicks}"
-            Logger.logTrace (fun () -> newId)
-            addCount newId
+            Logger.logTrace (fun () -> $"Profiling.addTimestamp # [{id}] ticks={newTicks}")
+            addCount $"# {id}"
 
     addTimestamp $"{nameof FsJs} | Profiling body"
 
