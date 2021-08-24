@@ -30,30 +30,35 @@ module Profiling =
                 profilingState.CountMap.Clear ()
                 profilingState.TimestampMap.Clear ())
 
-    let removeCount id =
+    let removeCount fn =
         if Dom.globalDebug.Get () then
+            let id = fn ()
+
             match profilingState.CountMap.ContainsKey id with
             | false -> profilingState.CountMap.[id] <- -1
             | true -> profilingState.CountMap.[id] <- profilingState.CountMap.[id] - 1
 
             Logger.logTrace (fun () -> $"Profiling.removeCount [{id}] --{profilingState.CountMap.[id]}")
 
-    let addCount id =
+    let addCount fn =
         if Dom.globalDebug.Get () then
+            let id = fn ()
+
             match profilingState.CountMap.ContainsKey id with
             | false -> profilingState.CountMap.[id] <- 1
             | true -> profilingState.CountMap.[id] <- profilingState.CountMap.[id] + 1
 
             Logger.logTrace (fun () -> $"Profiling.addCount [{id}] ++{profilingState.CountMap.[id]}")
 
-    let addTimestamp id =
+    let addTimestamp fn =
         if Dom.globalDebug.Get () then
+            let id = fn ()
             let newTicks = DateTime.ticksDiff initialTicks
             profilingState.TimestampMap.Add (id, newTicks)
             Logger.logTrace (fun () -> $"Profiling.addTimestamp # [{id}] ticks={newTicks}")
-            addCount $"# {id}"
+            addCount (fun () -> $"# {id}")
 
-    addTimestamp $"{nameof FsJs} | Profiling body"
+    addTimestamp (fun () -> $"{nameof FsJs} | Profiling body")
 
 
     let measureTimeN n name fn =
