@@ -52,6 +52,6 @@ module Profiling =
             profilingState.TimestampMap.Add (id, newTicks)
             let newId = $"Profiling.addTimestamp [{id}] ticks={newTicks}"
             Logger.logTrace (fun () -> newId)
-            addCount id
+            addCount newId
 
-    addTimestamp "Profiling body"
+    addTimestamp $"{nameof FsJs} | Profiling body"
