@@ -113,8 +113,10 @@ module Dom =
         let inline getWindowGlobalMap window : Dictionary<string, obj> = window?_globalMap
 
         match window () with
-        | Some window when isDebugStatic -> setWindowGlobalMap window globalMap
-        | _ -> ()
+        | Some window when isDebugStatic ->
+            printfn "assigning _globalMap"
+            setWindowGlobalMap window globalMap
+        | _ -> printfn "_globalMap assign skipped"
 
         let internalGet<'T> (key: string) (defaultValue: 'T) =
             match globalMap.TryGetValue key with

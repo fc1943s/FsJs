@@ -1,5 +1,6 @@
 namespace FsJs
 
+open FsCore
 open System
 open Fable.DateFunctions
 open Fable.Core.JsInterop
@@ -14,6 +15,11 @@ module DateTime =
     let inline format format (dateTime: DateTime) = dateTime.Format format
 
     let inline addDays (days: int) (dateTime: DateTime) = dateTime.AddDays days
+
+
+module Enum =
+    let inline formatIfEnum<'T> (value: 'T) =
+        if typeof<'T>.IsEnum then value |> Enum.name |> unbox else value
 
 
 module Object =
