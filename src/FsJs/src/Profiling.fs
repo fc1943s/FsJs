@@ -38,7 +38,7 @@ module Profiling =
             | false -> profilingState.CountMap.[id] <- -1
             | true -> profilingState.CountMap.[id] <- profilingState.CountMap.[id] - 1
 
-            Logger.logTrace (fun () -> $"Profiling.removeCount [{id}] --{profilingState.CountMap.[id]}")
+            Logger.logTrace (fun () -> $"- {id} (Profiling.removeCount(--{profilingState.CountMap.[id]}))")
 
     let inline private addCountMap id =
         match profilingState.CountMap.ContainsKey id with
@@ -49,7 +49,7 @@ module Profiling =
         if Dom.globalDebug.Get () then
             let id = fn ()
             addCountMap id
-            Logger.logTrace (fun () -> $"+ {id} ++{profilingState.CountMap.[id]} (Profiling.addCount)")
+            Logger.logTrace (fun () -> $"+ {id} (Profiling.addCount(++{profilingState.CountMap.[id]}))")
 
     let addTimestamp fn =
         if Dom.globalDebug.Get () then
@@ -57,7 +57,7 @@ module Profiling =
             let newTicks = DateTime.ticksDiff initialTicks
             profilingState.TimestampMap.Add (id, newTicks)
             addCountMap id
-            Logger.logTrace (fun () -> $"# {id} ticks={newTicks} (Profiling.addTimestamp)")
+            Logger.logTrace (fun () -> $"# {id} (Profiling.addTimestamp({newTicks}ms))")
 
     addTimestamp (fun () -> $"{nameof FsJs} | Profiling body")
 
