@@ -6,11 +6,11 @@ source https://nuget.pkg.github.com/fc1943s/index.json username: "%GITHUB_ACTOR%
 
 nuget FSharp.Core ~> 5.0
 
-nuget FsCore
+nuget FsCore -> 0.0 prerelease
 
 // FsJs
 nuget Fable.DateFunctions ~> 3.6
 nuget Fable.Extras ~> 0.4
-nuget Thoth.Json ~> 6.0
 nuget Fable.Jester ~> 0.33
 nuget Fable.ReactTestingLibrary ~> 0.33
+nuget Thoth.Json ~> 6.0

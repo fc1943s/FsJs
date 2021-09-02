@@ -4,6 +4,6 @@ FsCore
 
 Fable.DateFunctions
 Fable.Extras
-Thoth.Json
 Fable.Jester
 Fable.ReactTestingLibrary
+Thoth.Json

@@ -4,7 +4,7 @@
         <TargetFramework>net6.0</TargetFramework>
         <LangVersion>preview</LangVersion>
         <PackageId>FsJs</PackageId>
-        <Version>0.0.1-alpha.38</Version>
+        <Version>0.0.1-alpha.39</Version>
     </PropertyGroup>
     <ItemGroup>
         <Compile Include="src\Core.fs" />
@@ -20,7 +20,9 @@
         <Content Include="pack.ps1">
             <Pack>false</Pack>
         </Content>
-        <Content Include="test.ps1" />
+        <Content Include="test.ps1">
+            <Pack>false</Pack>
+        </Content>
         <Content Include="paket.references" />
         <Content Include="paket.template" />
         <Content Include="package.json" />
