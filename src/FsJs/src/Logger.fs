@@ -91,8 +91,12 @@ module Logger =
         let mutable lastLogger = Logger.Default
         let inline getLogger () = lastLogger
 
-    let inline logTrace fn = State.getLogger().Trace fn
-    let inline logDebug fn = State.getLogger().Debug fn
+    let inline logTrace fn =
+        if Dom.globalDebug.Get () then State.getLogger().Trace fn
+
+    let inline logDebug fn =
+        if Dom.globalDebug.Get () then State.getLogger().Debug fn
+
     let inline logInfo fn = State.getLogger().Info fn
     let inline logWarning fn = State.getLogger().Warning fn
     let inline logError fn = State.getLogger().Error fn
