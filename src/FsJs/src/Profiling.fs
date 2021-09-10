@@ -46,7 +46,7 @@ module Profiling =
         | false -> profilingState.CountMap.[id] <- 1
         | true -> profilingState.CountMap.[id] <- profilingState.CountMap.[id] + 1
 
-    let addCount fn =
+    let addCount fn getLocals =
         if Dom.globalDebug.Get () then
             let id = fn ()
             addCountMap id
@@ -56,7 +56,7 @@ module Profiling =
 
             Logger.logTrace (fun () -> "Profiling.addCount") getLocals
 
-    let addTimestamp fn =
+    let addTimestamp fn getLocals =
         if Dom.globalDebug.Get () then
             let id = fn ()
             let newTicks = DateTime.ticksDiff initialTicks
@@ -68,7 +68,7 @@ module Profiling =
 
             Logger.logTrace (fun () -> "Profiling.addTimestamp") getLocals
 
-    addTimestamp (fun () -> $"{nameof FsJs} | Profiling body")
+    addTimestamp (fun () -> $"{nameof FsJs} | Profiling body") getLocals
 
 
     let measureTimeN n name fn =
