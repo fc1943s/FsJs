@@ -49,21 +49,23 @@ module Profiling =
     let addCount fn getLocals =
         if Dom.globalDebug.Get () then
             let id = fn ()
-            addCountMap id
+            let newTxt = $"{id} {getLocals ()}"
+            addCountMap newTxt
 
             let getLocals () =
-                $"profilingState.CountMap.[id]={profilingState.CountMap.[id]} {getLocals ()}"
+                $"profilingState.CountMap.[newTxt]={profilingState.CountMap.[newTxt]} {getLocals ()}"
 
             Logger.logTrace (fun () -> $"Profiling.addCount / {id}") getLocals
 
     let addTimestamp fn getLocals =
         if Dom.globalDebug.Get () then
-            let id = fn ()
             let newTicks = DateTime.ticksDiff initialTicks
-            profilingState.TimestampMap.Add (id, newTicks)
-            addCountMap id
-
             let getLocals () = $"newTicks={newTicks} {getLocals ()}"
+            let id = fn ()
+            let newTxt = $"{id} {getLocals ()}"
+
+            profilingState.TimestampMap.Add (newTxt, newTicks)
+            addCountMap newTxt
 
             Logger.logTrace (fun () -> $"Profiling.addTimestamp / {id}") getLocals
 
