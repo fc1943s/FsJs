@@ -39,7 +39,7 @@ module Logger =
 
     let DEFAULT_LOG_LEVEL = if Dom.globalDebug.Get () then LogLevel.Trace else LogLevel.Info
 
-    type LogFn = (unit -> string) -> unit
+    type LogFn = (unit -> string) -> (unit -> string) -> unit
 
     type Logger =
         {
@@ -50,7 +50,7 @@ module Logger =
             Error: LogFn
         }
 
-    let logIf currentLogLevel logLevel (fn: unit -> string) =
+    let inline logIf currentLogLevel logLevel (fn: unit -> string) getLocals =
         if currentLogLevel <= logLevel then
             let result = fn ()
 
@@ -69,6 +69,8 @@ module Logger =
                             $"[{Enum.name logLevel}] "
                             "color: #AAA"
                             result
+                            "color: #888"
+                            (getLocals ())
                         |])
 
     type Logger with
@@ -91,14 +93,17 @@ module Logger =
         let mutable lastLogger = Logger.Default
         let inline getLogger () = lastLogger
 
-    let inline logTrace fn =
-        if Dom.globalDebug.Get () then State.getLogger().Trace fn
+    let inline logTrace fn getLocals =
+        if Dom.globalDebug.Get () then State.getLogger().Trace fn getLocals
 
-    let inline logDebug fn =
-        if Dom.globalDebug.Get () then State.getLogger().Debug fn
+    let inline logDebug fn getLocals =
+        if Dom.globalDebug.Get () then State.getLogger().Debug fn getLocals
 
-    let inline logInfo fn = State.getLogger().Info fn
-    let inline logWarning fn = State.getLogger().Warning fn
-    let inline logError fn = State.getLogger().Error fn
+    let inline logInfo fn getLocals = State.getLogger().Info fn getLocals
+    let inline logWarning fn getLocals = State.getLogger().Warning fn getLocals
+    let inline logError fn getLocals = State.getLogger().Error fn getLocals
 
-    logInfo (fun () -> $"Logger body. deviceInfo={JS.JSON.stringify Dom.deviceInfo}")
+    let getLocals () =
+        $"deviceInfo={JS.JSON.stringify Dom.deviceInfo} {getLocals ()}"
+
+    logInfo (fun () -> "Logger body") getLocals

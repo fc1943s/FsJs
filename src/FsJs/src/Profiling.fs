@@ -21,12 +21,10 @@ module Profiling =
         Dom.Global.register
             (nameof globalClearProfilingState)
             (fun () ->
-                Logger.logTrace
-                    (fun () ->
-                        $"Profiling.globalClearProfilingState
-             CountMap.Count={profilingState.CountMap.Count}
-             TimestampMap.Count={profilingState.TimestampMap.Count} ")
+                let getLocals () =
+                    $"CountMap.Count={profilingState.CountMap.Count} TimestampMap.Count={profilingState.TimestampMap.Count} {getLocals ()}"
 
+                Logger.logTrace (fun () -> "Profiling.globalClearProfilingState") getLocals
                 profilingState.CountMap.Clear ()
                 profilingState.TimestampMap.Clear ())
 
@@ -38,7 +36,10 @@ module Profiling =
             | false -> profilingState.CountMap.[id] <- -1
             | true -> profilingState.CountMap.[id] <- profilingState.CountMap.[id] - 1
 
-            Logger.logTrace (fun () -> $"- {id} (Profiling.removeCount(--{profilingState.CountMap.[id]}))")
+            let getLocals () =
+                $"id={id} profilingState.CountMap.[id]={profilingState.CountMap.[id]} {getLocals ()}"
+
+            Logger.logTrace (fun () -> "Profiling.removeCount") getLocals
 
     let inline private addCountMap id =
         match profilingState.CountMap.ContainsKey id with
@@ -49,7 +50,11 @@ module Profiling =
         if Dom.globalDebug.Get () then
             let id = fn ()
             addCountMap id
-            Logger.logTrace (fun () -> $"+ {id} (Profiling.addCount(++{profilingState.CountMap.[id]}))")
+
+            let getLocals () =
+                $"id={id} profilingState.CountMap.[id]={profilingState.CountMap.[id]} {getLocals ()}"
+
+            Logger.logTrace (fun () -> "Profiling.addCount") getLocals
 
     let addTimestamp fn =
         if Dom.globalDebug.Get () then
@@ -57,7 +62,11 @@ module Profiling =
             let newTicks = DateTime.ticksDiff initialTicks
             profilingState.TimestampMap.Add (id, newTicks)
             addCountMap id
-            Logger.logTrace (fun () -> $"# {id} (Profiling.addTimestamp({newTicks}ms))")
+
+            let getLocals () =
+                $"id={id} newTicks={newTicks} {getLocals ()}"
+
+            Logger.logTrace (fun () -> "Profiling.addTimestamp") getLocals
 
     addTimestamp (fun () -> $"{nameof FsJs} | Profiling body")
 

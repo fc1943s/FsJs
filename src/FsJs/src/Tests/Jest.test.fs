@@ -1,5 +1,6 @@
 namespace FsJs.Tests
 
+open FsCore
 open Fable.Jester
 open Fable.Core.JsInterop
 open FsJs
@@ -13,7 +14,7 @@ module Jest =
             emitJsExpr ("console.log", (emitJsExpr () "console.log")) Jest.jsHookFnBody
 
             let text = "Jest test"
-            Logger.logTrace (fun () -> text)
+            Logger.logTrace (fun () -> text) getLocals
 
             (Jest.expect ((emitJsExpr () "console.log.mock.calls[0]"): string list))
                 .toEqual (

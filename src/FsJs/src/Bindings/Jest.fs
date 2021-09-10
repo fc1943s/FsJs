@@ -1,5 +1,6 @@
 namespace FsJs.Bindings
 
+open FsCore
 open Fable.Jester
 open Fable.ReactTestingLibrary
 open Fable.Core.JsInterop
@@ -38,7 +39,7 @@ $1 = jest.fn()"
 
     Jest.afterAll (
         promise {
-            Logger.logTrace (fun () -> "Setup body. Jest.afterAll")
+            Logger.logTrace (fun () -> "Setup body. Jest.afterAll") getLocals
             globalExit.Set true
         }
     )
