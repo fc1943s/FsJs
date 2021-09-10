@@ -60,7 +60,6 @@ module Profiling =
     let addTimestamp fn getLocals =
         if Dom.globalDebug.Get () then
             let newTicks = DateTime.ticksDiff initialTicks
-            let getLocals () = $"newTicks={newTicks} {getLocals ()}"
             let id = fn ()
             let newTxt = $"{id} {getLocals ()}"
 

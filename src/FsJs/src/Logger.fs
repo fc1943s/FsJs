@@ -50,7 +50,7 @@ module Logger =
             Error: LogFn
         }
 
-    let inline logIf currentLogLevel logLevel (fn: unit -> string) getLocals =
+    let inline logIf currentLogLevel logLevel (fn: unit -> string) (getLocals: unit -> string) =
         if currentLogLevel <= logLevel then
             let result = fn ()
 
@@ -70,7 +70,7 @@ module Logger =
                             "color: #AAA"
                             result
                             "color: #888"
-                            $" [{getLocals ()}]"
+                            $" [{getLocals().Trim ()}]"
                         |])
 
     type Logger with
