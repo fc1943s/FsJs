@@ -70,7 +70,7 @@ module Logger =
                             "color: #AAA"
                             result
                             "color: #888"
-                            (getLocals ())
+                            $" [{getLocals ()}]"
                         |])
 
     type Logger with

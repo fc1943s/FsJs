@@ -25,7 +25,7 @@ module Jest =
                         "color: #AAA"
                         text
                         "color: #888"
-                        (getLocals ())
+                        $" [{getLocals ()}]"
                     ]
                 )
         },
