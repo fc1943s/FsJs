@@ -7,7 +7,7 @@ open FsJs
 
 
 module Cypress =
-    let cypressTimeout = 60000
+    let cypressTimeout = 180000
 
 
     type ExpectToBe<'T> =
