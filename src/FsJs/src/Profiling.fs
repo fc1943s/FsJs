@@ -66,7 +66,12 @@ module Profiling =
             profilingState.TimestampMap.Add (newTxt, newTicks)
             addCountMap newTxt
 
-            Logger.logTrace (fun () -> $"Profiling.addTimestamp / {id}") getLocals
+            let inline getLogFn (txt: string) =
+                if txt.Contains "Ping " then Logger.logInfo else Logger.logTrace
+
+            let logFn = getLogFn newTxt
+
+            logFn (fun () -> $"Profiling.addTimestamp / {id}") getLocals
 
     addTimestamp (fun () -> $"{nameof FsJs} | Profiling body") getLocals
 
