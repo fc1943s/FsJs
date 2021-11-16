@@ -12,7 +12,7 @@
     "build:fable": "dotnet tool restore && dotnet paket restore && dotnet fable",
     "watch:fable-build": "dotnet fable watch",
     "build": "yarn build:fable",
-    "test-parallel": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --coverage false --colors",
+    "test-parallel": "cross-env NODE_OPTIONS=--experimental-modules jest --coverage false --colors",
     "test-sequential": "yarn test-parallel --runInBand --detectOpenHandles",
     "test": "yarn test-parallel",
     "test-watch": "yarn test --watchAll",
